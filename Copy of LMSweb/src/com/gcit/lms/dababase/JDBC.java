@@ -1,4 +1,4 @@
-package com.gcit.lms.dababase;
+/*package com.gcit.lms.dababase;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -780,11 +780,11 @@ public class JDBC {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	}*/
 
-	private Connection getConnection() throws ClassNotFoundException, SQLException {
-		Class.forName("com.mysql.jdbc.Driver");
-		Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root", "root");
-		return conn;
-	}
-}
+	//private Connection getConnection() throws ClassNotFoundException, SQLException {
+		//Class.forName("com.mysql.jdbc.Driver");
+		//Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root", "root");
+		///return conn;
+	//}/
+//}

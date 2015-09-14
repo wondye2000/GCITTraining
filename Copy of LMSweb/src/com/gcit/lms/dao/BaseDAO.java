@@ -1,82 +1,90 @@
 package com.gcit.lms.dao;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
 public abstract class BaseDAO<T> {
-	Connection conn = null;
-	
-	public BaseDAO(Connection conn){
-		this.conn = conn;
+
+	private Connection connection = null;
+
+	public BaseDAO(Connection conn) throws Exception {
+		this.connection = conn;
 	}
-	
-	public void save(String query, Object[] vals) throws SQLException, ClassNotFoundException{
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		
-		if(vals!=null){
-			int count =1;
-			for(Object o: vals){
-				pstmt.setObject(count, o);
-				count++;
-			}
-		}
-		pstmt.executeUpdate();
+
+	public Connection getConnection() throws Exception {
+		return connection;
 	}
-	
-	public int saveWithID(String query, Object[] vals) throws SQLException, ClassNotFoundException{
-		PreparedStatement pstmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-		
-		if(vals!=null){
-			int count =1;
-			for(Object o: vals){
-				pstmt.setObject(count, o);
-				count++;
-			}
+
+	public void save(String query, Object[] vals) throws Exception {
+		Connection conn = getConnection();
+
+		PreparedStatement stmt = conn.prepareStatement(query);
+		int count = 1;
+		for (Object o : vals) {
+			stmt.setObject(count, o);
+			count++;
 		}
-		pstmt.executeUpdate();
-		ResultSet rs = pstmt.getGeneratedKeys();
-		if(rs.next()){
+
+		stmt.executeUpdate();
+	}
+
+	public int saveWithID(String query, Object[] vals) throws Exception {
+		Connection conn = getConnection();
+
+		PreparedStatement stmt = conn.prepareStatement(query,
+				Statement.RETURN_GENERATED_KEYS);
+		int count = 1;
+		for (Object o : vals) {
+			stmt.setObject(count, o);
+			count++;
+		}
+		stmt.executeUpdate();
+		ResultSet rs = stmt.getGeneratedKeys();
+		if (rs.next()) {
 			return rs.getInt(1);
-		}else{
+		} else {
+			// unsuccessful
 			return -1;
 		}
 	}
-	
-	public List<?> readAll(String query, Object[] vals) throws ClassNotFoundException, SQLException{
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		
-		if(vals!=null){
-			int count =1;
-			for(Object o: vals){
-				pstmt.setObject(count, o);
+
+	public List<?> read(String query, Object[] vals) throws Exception {
+		// List<T> objects = new ArrayList<T>();
+		Connection conn = getConnection();
+		PreparedStatement stmt = conn.prepareStatement(query);
+
+		if (vals != null) {
+			int count = 1;
+			for (Object o : vals) {
+				stmt.setObject(count, o);
 				count++;
 			}
 		}
-		ResultSet rs = pstmt.executeQuery();
-		return (List<T>) extractData(rs);
+		ResultSet rs = stmt.executeQuery();
+		return extractData(rs);
 	}
-	
-	abstract public List<?> extractData(ResultSet rs) throws ClassNotFoundException, SQLException;
-	
-	
-	public List<?> readFirstLevel(String query, Object[] vals) throws ClassNotFoundException, SQLException{
-		PreparedStatement pstmt = conn.prepareStatement(query);
-		
-		if(vals!=null){
-			int count =1;
-			for(Object o: vals){
-				pstmt.setObject(count, o);
+
+	public abstract List<T> extractData(ResultSet rs) throws Exception;
+
+	public List<?> readFirstLevel(String query, Object[] vals) throws Exception {
+		// List<T> objects = new ArrayList<T>();
+		Connection conn = getConnection();
+		PreparedStatement stmt = conn.prepareStatement(query);
+
+		if (vals != null) {
+			int count = 1;
+			for (Object o : vals) {
+				stmt.setObject(count, o);
 				count++;
 			}
 		}
-		ResultSet rs = pstmt.executeQuery();
-		return (List<T>) extractDataFirstLevel(rs);
+		ResultSet rs = stmt.executeQuery();
+		return extractDataFirstLevel(rs);
 	}
-	
-	abstract public List<?> extractDataFirstLevel(ResultSet rs) throws SQLException;
+
+	public abstract List<T> extractDataFirstLevel(ResultSet rs)
+			throws Exception;
 }

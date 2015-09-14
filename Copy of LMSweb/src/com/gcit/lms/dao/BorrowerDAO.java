@@ -5,22 +5,26 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.gcit.lms.domain.*;
+import com.gcit.lms.domain.Book;
+import com.gcit.lms.domain.Borrower;
 
-public class BorrowerDAO extends BaseDAO{
+public class BorrowerDAO extends BaseDAO<Borrower> {
+
 	public BorrowerDAO(Connection conn) throws Exception {
 		super(conn);
 		// TODO Auto-generated constructor stub
 	}
 
 	public void create(Borrower borrower) throws Exception {
-		save("insert into tbl_borrower (name, address, phone) values(?,?,?)",
-				new Object[] { borrower.getName(), borrower.getAddress(), borrower.getPhone() });
+		save("insert into tbl_borrower (name, address, phone) values(?, ?, ?)",
+				new Object[] { borrower.getName(), borrower.getAddress(),
+						borrower.getPhone() });
 	}
 
 	public void update(Borrower borrower) throws Exception {
-		save("update tbl_borrower set name = ?, address = ?, phone = ? where cardNo = ?",
-				new Object[] { borrower.getName(), borrower.getAddress(), borrower.getPhone(), borrower.getCardNo() });
+		save("update tbl_borrower set name = ?, phone = ?, address = ? where cardNo = ?",
+				new Object[] { borrower.getName(), borrower.getAddress(),
+						borrower.getPhone(), borrower.getCardNo() });
 
 	}
 
@@ -29,35 +33,42 @@ public class BorrowerDAO extends BaseDAO{
 				new Object[] { borrower.getCardNo() });
 	}
 
-	public List<Borrower> readAll() throws Exception{
-		return (List<Borrower>) readAll("select * from tbl_borrower", null);
-		
+	@SuppressWarnings("unchecked")
+	public List<Borrower> readAll() throws Exception {
+		return (List<Borrower>) read("select * from tbl_borrower", null);
+
 	}
 
 	public Borrower readOne(int cardNo) throws Exception {
-		List<Borrower> borrowers = (List<Borrower>) readAll("select * from tbl_borrower where cardNo = ?", new Object[] {cardNo});
-		if(borrowers!=null && borrowers.size()>0){
+		@SuppressWarnings("unchecked")
+		List<Borrower> borrowers = (List<Borrower>) read(
+				"select * from tbl_borrower where cardNo = ?",
+				new Object[] { cardNo });
+		if (borrowers != null && borrowers.size() > 0) {
 			return borrowers.get(0);
 		}
 		return null;
 	}
 
-	//TODO: missing
 	@Override
 	public List<Borrower> extractData(ResultSet rs) throws Exception {
-		List<Borrower> borrowers =  new ArrayList<Borrower>();
-		BookLoanDAO bldao = new BookLoanDAO(conn);
-		
-		while(rs.next()){
+		List<Borrower> borrowers = new ArrayList<Borrower>();
+		BookDAO bDao = new BookDAO(getConnection());
+
+		while (rs.next()) {
 			Borrower b = new Borrower();
-			b.setAddress(rs.getString("address"));
+			b.setCardNo(rs.getInt("authorId"));
 			b.setName(rs.getString("name"));
+			b.setAddress(rs.getString("address"));
 			b.setPhone(rs.getString("phone"));
-			b.setCardNo(rs.getInt("cardNo"));
+
 			@SuppressWarnings("unchecked")
-			List<BookLoan> bookLoans = (List<BookLoan>) bldao.readFirstLevel("select * from tbl_book_loans where cardNo = ?"
-					, new Object[] {rs.getInt("cardNo")});
-			b.setBookLoans(bookLoans);
+			List<Book> books = (List<Book>) bDao
+					.readFirstLevel(
+							"select * from tbl_books where bookId In"
+									+ "(select bookId from tbl_book_loans where cardNo=?)",
+							new Object[] { rs.getInt("cardNo") });
+			b.setBooks(books);
 			borrowers.add(b);
 		}
 		return borrowers;
@@ -65,17 +76,18 @@ public class BorrowerDAO extends BaseDAO{
 
 	@Override
 	public List<Borrower> extractDataFirstLevel(ResultSet rs) throws Exception {
-		List<Borrower> borrowers =  new ArrayList<Borrower>();
-		
-		while(rs.next()){
+		List<Borrower> borrowers = new ArrayList<Borrower>();
+
+		while (rs.next()) {
 			Borrower b = new Borrower();
 			b.setCardNo(rs.getInt("cardNo"));
-			b.setAddress(rs.getString("address"));
 			b.setName(rs.getString("name"));
+			b.setAddress(rs.getString("address"));
 			b.setPhone(rs.getString("phone"));
-			
+
 			borrowers.add(b);
 		}
 		return borrowers;
 	}
+
 }

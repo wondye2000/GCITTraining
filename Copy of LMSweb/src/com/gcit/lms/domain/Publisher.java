@@ -1,18 +1,11 @@
 package com.gcit.lms.domain;
 
-import java.util.List;
-
 public class Publisher {
-	
+
 	private int publisherId;
-	
 	private String publisherName;
-	
 	private String publisherAddress;
-	
 	private String publisherPhone;
-	
-	private List<Book> books;
 
 	/**
 	 * @return the publisherId
@@ -22,7 +15,8 @@ public class Publisher {
 	}
 
 	/**
-	 * @param publisherId the publisherId to set
+	 * @param publisherId
+	 *            the publisherId to set
 	 */
 	public void setPublisherId(int publisherId) {
 		this.publisherId = publisherId;
@@ -36,7 +30,8 @@ public class Publisher {
 	}
 
 	/**
-	 * @param publisherName the publisherName to set
+	 * @param publisherName
+	 *            the publisherName to set
 	 */
 	public void setPublisherName(String publisherName) {
 		this.publisherName = publisherName;
@@ -50,7 +45,8 @@ public class Publisher {
 	}
 
 	/**
-	 * @param publisherAddress the publisherAddress to set
+	 * @param publisherAddress
+	 *            the publisherAddress to set
 	 */
 	public void setPublisherAddress(String publisherAddress) {
 		this.publisherAddress = publisherAddress;
@@ -64,25 +60,11 @@ public class Publisher {
 	}
 
 	/**
-	 * @param publisherPhone the publisherPhone to set
+	 * @param publisherPhone
+	 *            the publisherPhone to set
 	 */
 	public void setPublisherPhone(String publisherPhone) {
 		this.publisherPhone = publisherPhone;
 	}
-
-	/**
-	 * @return the books
-	 */
-	public List<Book> getBooks() {
-		return books;
-	}
-
-	/**
-	 * @param books the books to set
-	 */
-	public void setBooks(List<Book> books) {
-		this.books = books;
-	}
-	
 
 }

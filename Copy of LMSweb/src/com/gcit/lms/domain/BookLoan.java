@@ -1,88 +1,77 @@
 package com.gcit.lms.domain;
 
-import java.sql.Timestamp;
+import java.util.Date;
 
 public class BookLoan {
-	Timestamp dateOut;
-	Timestamp dateIn;
-	Timestamp dueDate;
+
+	private int bookId;
+	private int branchId;
+	private int cardNo;
+	private Date dateOut;
+	private Date dueDate;
+	private Date dateIn;
 	
-	private Book book;
-	private LibraryBranch libraryBranch;
-	private Borrower borrower;
-	/**
-	 * @return the dateOut
-	 */
-	public Timestamp getDateOut() {
-		return dateOut;
+	public BookLoan() {
+		
 	}
-	/**
-	 * @param dateOut the dateOut to set
-	 */
-	public void setDateOut(Timestamp dateOut) {
+
+	public BookLoan(int bookId, int branchId, int cardNo, Date dateOut,
+			Date dueDate, Date dateIn) {
+		super();
+		this.bookId = bookId;
+		this.branchId = branchId;
+		this.cardNo = cardNo;
 		this.dateOut = dateOut;
-	}
-	/**
-	 * @return the dateIn
-	 */
-	public Timestamp getDateIn() {
-		return dateIn;
-	}
-	/**
-	 * @param dateIn the dateIn to set
-	 */
-	public void setDateIn(Timestamp dateIn) {
+		this.dueDate = dueDate;
 		this.dateIn = dateIn;
 	}
-	/**
-	 * @return the dueDate
-	 */
-	public Timestamp getDueDate() {
+
+	public int getBookId() {
+		return bookId;
+	}
+
+	public void setBookId(int bookId) {
+		this.bookId = bookId;
+	}
+
+	public int getBranchId() {
+		return branchId;
+	}
+
+	public void setBranchId(int branchId) {
+		this.branchId = branchId;
+	}
+
+	public int getCardNo() {
+		return cardNo;
+	}
+
+	public void setCardNo(int cardNo) {
+		this.cardNo = cardNo;
+	}
+
+	public Date getDateOut() {
+		return dateOut;
+	}
+
+	public void setDateOut(Date dateOut) {
+		this.dateOut = dateOut;
+	}
+
+	public Date getDueDate() {
 		return dueDate;
 	}
-	/**
-	 * @param dueDate the dueDate to set
-	 */
-	public void setDueDate(Timestamp dueDate) {
+
+	public void setDueDate(Date dueDate) {
 		this.dueDate = dueDate;
 	}
-	/**
-	 * @return the book
-	 */
-	public Book getBook() {
-		return book;
+
+	public Date getDateIn() {
+		return dateIn;
 	}
-	/**
-	 * @param book the book to set
-	 */
-	public void setBook(Book book) {
-		this.book = book;
+
+	public void setDateIn(Date dateIn) {
+		this.dateIn = dateIn;
 	}
-	/**
-	 * @return the libraryBranch
-	 */
-	public LibraryBranch getLibraryBranch() {
-		return libraryBranch;
-	}
-	/**
-	 * @param libraryBranch the libraryBranch to set
-	 */
-	public void setLibraryBranch(LibraryBranch libraryBranch) {
-		this.libraryBranch = libraryBranch;
-	}
-	/**
-	 * @return the borrower
-	 */
-	public Borrower getBorrower() {
-		return borrower;
-	}
-	/**
-	 * @param borrower the borrower to set
-	 */
-	public void setBorrower(Borrower borrower) {
-		this.borrower = borrower;
-	}
-	
-	
-	
+
 }

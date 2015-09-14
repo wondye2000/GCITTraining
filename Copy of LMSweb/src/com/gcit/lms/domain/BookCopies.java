@@ -4,6 +4,10 @@ public class BookCopies {
 	private int bookId;
 	private int branchId;
 	private int noOfCopies;
+	
+	public BookCopies(){
+		
+	}
 
 	public BookCopies(int bookId, int branchId, int noOfCopies) {
 		super();

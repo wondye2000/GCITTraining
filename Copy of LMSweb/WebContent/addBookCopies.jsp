@@ -2,17 +2,17 @@
 	pageEncoding="ISO-8859-1"%>
 <%@ page import="com.gcit.lms.domain.Book"%>
 <%@ page import="com.gcit.lms.domain.Branch"%>
-<%@ page import="com.gcit.lms.dababase.JDBC"%>
+<%@ page import="com.gcit.lms.service.AdministratorService"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
 <%
-	JDBC jdbc = new JDBC();
+AdministratorService service = new AdministratorService();
 	/*List<Book> books = new ArrayList<Book>();
 	books = jdbc.getBooks();*/
 
 	int branchId = Integer.parseInt(request.getParameter("branchId"));
-	Branch branch = jdbc.getBranch(branchId);
-	List<Book> books = jdbc.getBooks();
+	Branch branch = service.getBranch(branchId);
+	List<Book> books = service.getBooks();
 
 	request.setAttribute("branchId", branchId);
 %>

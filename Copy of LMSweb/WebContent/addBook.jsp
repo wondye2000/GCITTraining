@@ -3,19 +3,19 @@
 <%@ page import="com.gcit.lms.domain.Author"%>
 <%@ page import="com.gcit.lms.domain.Publisher"%>
 <%@ page import="com.gcit.lms.domain.Genre"%>
-<%@ page import="com.gcit.lms.dababase.JDBC"%>
+<%@ page import="com.gcit.lms.service.AdministratorService"%>
 <%@ page import="java.util.ArrayList"%>
 <%@ page import="java.util.List"%>
 <%
-	JDBC jdbc = new JDBC();
+AdministratorService service = new AdministratorService();
 	List<Author> authors = new ArrayList<Author>();
-	authors = jdbc.getAuthors();
+	authors = service.getAuthors();
 
 	List<Publisher> publishers = new ArrayList<Publisher>();
-	publishers = jdbc.getPublishers();
+	publishers = service.getPublishers();
 
 	List<Genre> genres = new ArrayList<Genre>();
-	genres = jdbc.getGenres();
+	genres = service.getGenres();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>

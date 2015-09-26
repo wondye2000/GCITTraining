@@ -1,15 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<%@ page import="com.gcit.lms.dababase.JDBC" %>
+<%@ page import="com.gcit.lms.service.AdministratorService" %>
 <%@page import="com.gcit.lms.domain.Borrower"%>
 <%@page import="com.gcit.lms.domain.Book"%>
-<%@page import="com.gcit.lms.domain.LibraryBranch"%>
+<%@page import="com.gcit.lms.domain.Branch"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
 <%
-JDBC jdbc = new JDBC();
-List<LibraryBranch> lib=new ArrayList<LibraryBranch>();
-lib=jdbc.getBranch();
+AdministratorService service = new AdministratorService();
+List<Branch> lib=new ArrayList<Branch>();
+lib=service.getBranch();
 %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
@@ -21,7 +21,7 @@ lib=jdbc.getBranch();
 <h1>Please select Branch</h1>
 <form action="borrower1.jsp" method="post">
 <select required>
-<%for(LibraryBranch a:lib){%>
+<%for(Branch a:lib){%>
 <option value="volvo"><%=a.getBranchName() %></option>
 <%} %>
   </select>

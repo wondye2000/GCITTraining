@@ -1,6 +1,9 @@
 package com.gcit.lms.service;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gcit.lms.dao.AuthorDAO;
 import com.gcit.lms.dao.BookDAO;
@@ -37,7 +40,14 @@ public class AdministratorService {
 			conn.close();
 		}
 	}
-
+	public List<Author> getAuthors() throws Exception {
+			
+			Connection conn = ConnectionUtil.getConnection();
+			AuthorDAO adao=new AuthorDAO(conn);
+             return adao.readAll();
+			
+		
+	}
 	public void updateAuthor(Author author) throws Exception {
 		Connection conn = ConnectionUtil.getConnection();
 		try {

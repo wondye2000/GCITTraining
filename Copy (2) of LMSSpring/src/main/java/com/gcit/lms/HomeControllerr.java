@@ -42,7 +42,7 @@ import com.gcit.lms.domain.Publisher;
 import com.gcit.lms.service.AdministratorService;
 
 @RestController
-public class HomeController {
+public class HomeControllerr {
 
 	
 	@Autowired

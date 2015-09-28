@@ -7,11 +7,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;*/
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 public abstract class BaseDAO<T> {
 	@Autowired
 	JdbcTemplate template;
+	
+	
+	@Autowired
+	MongoOperations mongoOps;
 
 	private int pageNo = -1;
 

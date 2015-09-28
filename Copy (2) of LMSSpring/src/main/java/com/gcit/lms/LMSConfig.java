@@ -75,6 +75,16 @@ return new AuthorDAO();
 		public BookCopiesDAO bookCopiesDAO(){
 		return new BookCopiesDAO();
 	}
+	@Bean
+	public MongoDbFactory mongoDbFactory() throws UnknownHostException{
+		return new SimpleMongoDbFactory(new MongoClient(), "local");
+	}
+	
+	@Bean
+	public MongoTemplate mongoTemplate() throws UnknownHostException{
+		MongoTemplate mongoTemplate = new MongoTemplate(mongoDbFactory());
+		return mongoTemplate;
+	}
 	
 	@Bean
 	public BasicDataSource dataSource(){

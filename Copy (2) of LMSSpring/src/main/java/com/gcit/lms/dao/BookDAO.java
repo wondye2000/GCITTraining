@@ -6,8 +6,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.CriteriaDefinition;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -26,7 +33,7 @@ public class BookDAO extends BaseDAO<Book>implements ResultSetExtractor<List<Boo
 	@Autowired
 	GenreDAO gdao;
 
-	public void createBook(final Book book) {
+	/*public void createBook(final Book book) {
 
 		KeyHolder keyHolder = new GeneratedKeyHolder();
 		System.out.println(book.getPublisher().getPublisherId());
@@ -45,7 +52,7 @@ public class BookDAO extends BaseDAO<Book>implements ResultSetExtractor<List<Boo
 		
 		//template.
 
-		System.out.println("here");
+		
 
 		int bookId = keyHolder.getKey().intValue();
 		for (Author a : book.getAuthors()) {
@@ -58,107 +65,62 @@ public class BookDAO extends BaseDAO<Book>implements ResultSetExtractor<List<Boo
 					new Object[] { bookId, g.getGenreId() });
 		}
 
+	}*/
+
+	private final String BK_COLLECTION = "Books";
+
+	public void createBook(final Book book) throws Exception {
+		mongoOps.insert(book, BK_COLLECTION);
 	}
 
-	public Book getBooksByName(Book book) throws ClassNotFoundException, SQLException {
-		List<Book> books = new ArrayList<Book>();
-		books = template.query("select * from tbl_book where title = ?", new Object[] { book.getTitle() }, this);
+	public void updateBook(Book book) throws Exception {
+		Query query = new Query(Criteria.where("authorid").is(book.getBookId()));
+		Book oldBook = mongoOps.findOne(query, Book.class, BK_COLLECTION);
 
-		if (books != null && books.size() > 0) {
-			return books.get(0);
-		}
-		return null;
+		oldBook.setTitle(book.getTitle());
+		mongoOps.save(oldBook, BK_COLLECTION);
 	}
 
-	public void updateBook(Book book) throws ClassNotFoundException, SQLException {
-		template.update("update tbl_book set title = ? where bookId = ?",
-				new Object[] { book.getTitle(), book.getBookId() });
+	public void deleteBook(Book book) throws Exception {
+		Query query = new Query(Criteria.where("_id").is(book.getBookId()));
+		mongoOps.remove(query, BK_COLLECTION);
 	}
 
-	public void deleteBook(Book book) throws ClassNotFoundException, SQLException {
-		template.update("delete from tbl_book where bookId=?", new Object[] { book.getBookId() });
+	public List<Book> readAllBooks() throws Exception {
+		return mongoOps.findAll(Book.class, BK_COLLECTION);
 	}
 
-	public List<Book> getAllBooks(int pageNo, int pageSize) throws ClassNotFoundException, SQLException {
-		setPageNo(pageNo);
-		setPageSize(pageSize);
-		List<Book> books = (List<Book>) template.query("select * from tbl_book LIMIT ? OFFSET ?",
-				new Object[] { pageSize, (pageNo - 1) * pageSize }, this);
-		return books;
+	public Book readOne(UUID bookId) throws Exception {
+		Query query = new Query(Criteria.where("_id").is(bookId));
+		return this.mongoOps.findOne(query, Book.class, BK_COLLECTION);
 	}
 
-	public List<Book> getAllBooks() throws ClassNotFoundException, SQLException {
-		return template.query("select * from tbl_book", this);
-	}
-
-	public Book getBookById(Book book) throws ClassNotFoundException, SQLException {
-		List<Book> books = new ArrayList<Book>();
-		books = template.query("select * from tbl_book where bookId = ?", new Object[] { book.getBookId() }, this);
-
-		if (books != null && books.size() > 0) {
-			return books.get(0);
-		}
-		return null;
-	}
-
-	public Book readOne(int bookId) throws Exception {
-
-		List<Book> book = template.query("select * from tbl_book where bookId=?", new Object[] { bookId }, this);
-		if (book != null && book.size() > 0) {
-			return book.get(0);
-		}
-		return null;
-	}
-
-	/*
-	 * @Override public List<Book> extractData(ResultSet rs) { List<Book> books
-	 * = new ArrayList<Book>(); //PublisherDAO pdao = new PublisherDAO(conn);
-	 * //AuthorDAO adao = new AuthorDAO(conn); while (rs.next()) { Book b = new
-	 * Book();
-	 * 
-	 * b.setBookId(rs.getInt("bookId"));
-	 * 
-	 * b.setTitle(rs.getString("title"));
-	 * b.setPublisher(pdao.getPublisherById(rs.getInt("pubId")));
-	 * 
-	 * List<Author> authors = (List<Author>) adao.readFirstLevel(
-	 * "select * from tbl_author where authorId in (select authorId from tbl_book_authors where bookId = ?)"
-	 * , new Object[] { b.getBookId() }); b.setAuthors(authors);
-	 * 
-	 * List<Genre> genres = (List<Genre>) template.query(
-	 * "select * from tbl_genre where genre_id in (select genre_id from tbl_book_genres where bookId = ?)"
-	 * , new Object[] { b.getBookId() }); b.setGenres(genres);
-	 * 
-	 * books.add(b); }
-	 * 
-	 * 
-	 * return books; }
-	 */
+	
 	@Override
 	public List<Book> extractData(ResultSet rs) throws SQLException {
 
-		// create a list
+		
 		List<Book> booksList = new ArrayList<Book>();
 
-		// populate the list
+		
 		while (rs.next()) {
 			Book book = new Book();
 			book.setBookId(rs.getInt("bookId"));
 			book.setTitle(rs.getString("title"));
-			try {
+			/*try {
 				book.setPublisher(pdao.readOne(rs.getInt("pubId")));
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
+			}*/
 
-			// get list of authors with given bookId
+			
 			List<Author> authors = template.query(
 					"select * from tbl_author where authorId In"
 							+ "(select authorId from tbl_book_authors where bookId=?)",
 					new Object[] { rs.getInt("bookId") }, adao);
 			book.setAuthors(authors);
 
-			// get list of genres with given bookId
+			
 			List<Genre> genres = template.query(
 					"select * from tbl_genre where genre_id In"
 							+ "(select genre_id from tbl_book_genres where bookId=?)",
@@ -174,10 +136,7 @@ public class BookDAO extends BaseDAO<Book>implements ResultSetExtractor<List<Boo
 		return booksList;
 	}
 
-	public List<Book> readAll() {
-		return template.query("select * from tbl_book", this);
-	}
-
+	
 	/*
 	 * public List extractDataFirstLevel(ResultSet rs) { List<Book> books = new
 	 * ArrayList<Book>(); //PublisherDAO pdao = new PublisherDAO(); try { while
